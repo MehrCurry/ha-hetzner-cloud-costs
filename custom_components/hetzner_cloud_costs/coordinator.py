@@ -9,6 +9,7 @@ from decimal import Decimal
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -20,6 +21,10 @@ from .ledger import CostLedger, CostSnapshot
 _LOGGER = logging.getLogger(__name__)
 
 STORAGE_VERSION = 1
+# ponytail: debounce ledger writes - an immediate async_save on every poll
+# wears flash storage (SD cards) for no benefit, a few seconds of lost
+# bookkeeping on a crash is an acceptable tradeoff.
+SAVE_DELAY = 10
 
 
 @dataclass
@@ -95,6 +100,8 @@ class HetznerCostsCoordinator(DataUpdateCoordinator[HetznerCostsData]):
                 async with self._session.get(
                     f"{API_BASE_URL}/servers", headers=headers, params=params
                 ) as response:
+                    if response.status == 401:
+                        raise ConfigEntryAuthFailed("Hetzner API token rejected")
                     if response.status != 200:
                         raise UpdateFailed(f"Hetzner API returned {response.status}")
                     payload = await response.json()
@@ -135,7 +142,7 @@ class HetznerCostsCoordinator(DataUpdateCoordinator[HetznerCostsData]):
                 )
 
             snapshot: CostSnapshot = ledger.update(current, datetime.now(UTC))
-            await self._store.async_save(ledger.to_dict())
+            self._store.async_delay_save(ledger.to_dict, SAVE_DELAY)
 
             _LOGGER.debug(
                 "update_cycle span_id=%s active=%d rate=%s total=%s",

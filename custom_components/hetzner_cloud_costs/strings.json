@@ -7,6 +7,11 @@
           "label_selector": "Label selector (optional, e.g. ci-fleeting=true)",
           "poll_interval": "Poll interval (seconds)"
         }
+      },
+      "reauth_confirm": {
+        "data": {
+          "api_token": "API token (read-only)"
+        }
       }
     },
     "error": {

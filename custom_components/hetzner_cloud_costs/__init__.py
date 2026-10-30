@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_TOKEN, Platform
 from homeassistant.core import HomeAssistant
@@ -15,13 +17,20 @@ from .const import (
 )
 from .coordinator import HetznerCostsCoordinator
 
+_LOGGER = logging.getLogger(__name__)
+
 PLATFORMS = [Platform.SENSOR, Platform.EVENT]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    await hass.async_add_executor_job(
-        otel.ensure_tracer_provider, hass.config.path(f"{DOMAIN}_traces.jsonl")
-    )
+    # ponytail: gated on debug level at setup time, not live - toggling the
+    # HA debug switch at runtime needs a reload of this entry to take effect.
+    # Unbounded JSONL growth with no rotation is acceptable for a debug-only
+    # trace file; add rotation if that stops being true.
+    if _LOGGER.isEnabledFor(logging.DEBUG):
+        await hass.async_add_executor_job(
+            otel.ensure_tracer_provider, hass.config.path(f"{DOMAIN}_traces.jsonl")
+        )
     coordinator = HetznerCostsCoordinator(
         hass,
         entry,
