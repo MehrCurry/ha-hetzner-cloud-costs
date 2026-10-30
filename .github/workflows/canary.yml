@@ -1,0 +1,31 @@
+name: canary
+
+# Home Assistant ships a new core version monthly. This job upgrades to
+# whatever is current and runs the full test suite against it, so a
+# breaking HA change surfaces as a failed scheduled run / filed issue
+# instead of as a silent break discovered by the user in production.
+on:
+  schedule:
+    - cron: "0 6 3 * *" # 3rd of each month, after HA's monthly release
+  workflow_dispatch:
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv lock --upgrade-package homeassistant --upgrade-package pytest-homeassistant-custom-component
+      - run: uv sync
+      - run: uv run ruff check .
+      - run: uv run pytest
+      - if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue list --label canary-failure --state open --json number --jq '.[0].number' | grep -q . || \
+          gh issue create --title "Canary: tests fail against latest Home Assistant" \
+            --label canary-failure \
+            --body "Monthly canary run ([$GITHUB_RUN_ID](${{ github.server_url }}/${{ github.repository }}/actions/runs/$GITHUB_RUN_ID)) failed against the latest Home Assistant release. See the run log for the breaking change."

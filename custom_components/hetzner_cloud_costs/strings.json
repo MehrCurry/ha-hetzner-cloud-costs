@@ -1,0 +1,17 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "api_token": "API token (read-only)",
+          "label_selector": "Label selector (optional, e.g. ci-fleeting=true)",
+          "poll_interval": "Poll interval (seconds)"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid API token",
+      "cannot_connect": "Could not reach the Hetzner API"
+    }
+  }
+}

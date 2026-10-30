@@ -1,0 +1,10 @@
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: ha-hetzner-cloud-costs-test
+    volumes:
+      - ./ha_config:/config
+      - ./custom_components/hetzner_cloud_costs:/config/custom_components/hetzner_cloud_costs
+    ports:
+      - "8123:8123"
+    restart: unless-stopped

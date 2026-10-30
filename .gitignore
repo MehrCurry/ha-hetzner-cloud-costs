@@ -1,0 +1,14 @@
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
+
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.venv/
+
+# docker-compose test HA instance state
+/ha_config/
+
+# local tool state, not project config
+/.serena/
+/.glciconfig.toml
