@@ -46,7 +46,9 @@ class HetznerLifecycleEvent(CoordinatorEntity[HetznerCostsCoordinator], EventEnt
         # re-baselines without firing events for servers that changed while
         # down - acceptable, this is informational, the cost ledger is the
         # source of truth and is persisted separately.
-        self._known: dict[int, ServerInfo] = {}
+        self._known: dict[int, ServerInfo] = {
+            s.id: s for s in coordinator.data.servers
+        }
 
     def _handle_coordinator_update(self) -> None:
         current = {s.id: s for s in self.coordinator.data.servers}

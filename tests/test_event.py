@@ -74,3 +74,19 @@ def test_disappeared_server_fires_removed_event():
     assert attrs["server_id"] == 1
     assert isinstance(attrs["lifetime_minutes"], int)
     assert entity._known == {}
+
+
+def test_servers_present_at_setup_do_not_fire_started_event():
+    coordinator = MagicMock()
+    coordinator.data = _FakeData(servers=[_server(1)])
+    entity = HetznerLifecycleEvent(coordinator, MagicMock(entry_id="e1", title="t"))
+    with (
+        patch.object(entity, "_trigger_event") as trigger,
+        patch(
+            "homeassistant.helpers.update_coordinator.CoordinatorEntity"
+            "._handle_coordinator_update"
+        ),
+    ):
+        entity._handle_coordinator_update()
+
+    trigger.assert_not_called()

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 
 from homeassistant.config_entries import ConfigEntry
@@ -64,8 +64,6 @@ class HetznerCostsCoordinator(DataUpdateCoordinator[HetznerCostsData]):
         label_selector: str,
         poll_interval: int,
     ) -> None:
-        from datetime import timedelta
-
         super().__init__(
             hass,
             _LOGGER,

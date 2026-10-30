@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+import aiohttp
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_API_TOKEN
@@ -56,7 +57,7 @@ class HetznerCloudCostsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await _validate_token(self.hass, user_input[CONF_API_TOKEN])
             except InvalidAuth:
                 errors["base"] = "invalid_auth"
-            except HomeAssistantError:
+            except (HomeAssistantError, aiohttp.ClientError, TimeoutError):
                 errors["base"] = "cannot_connect"
             else:
                 return self.async_create_entry(
