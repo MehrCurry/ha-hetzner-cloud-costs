@@ -1,6 +1,6 @@
 # Hetzner Cloud Costs
 
-[![pipeline status](https://gitlab.com/gzo-projects/ha-hetzner-cloud-costs/badges/main/pipeline.svg)](https://gitlab.com/gzo-projects/ha-hetzner-cloud-costs/-/pipelines)
+[![test](https://github.com/MehrCurry/ha-hetzner-cloud-costs/actions/workflows/test.yml/badge.svg)](https://github.com/MehrCurry/ha-hetzner-cloud-costs/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A [Home Assistant](https://www.home-assistant.io/) custom integration that
@@ -86,7 +86,7 @@ docker compose restart homeassistant  # after editing custom_components/
 ## Support
 
 If this saves you from guessing your CI fleet's Hetzner bill, consider
-sponsoring on GitHub Sponsors <!-- TODO: add your github.com/sponsors/<handle> link -->.
+[sponsoring on GitHub](https://github.com/sponsors/MehrCurry).
 
 ## License
 

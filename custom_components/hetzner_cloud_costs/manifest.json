@@ -3,9 +3,9 @@
   "name": "Hetzner Cloud Costs",
   "codeowners": ["@MehrCurry"],
   "config_flow": true,
-  "documentation": "https://gitlab.com/gzo-projects/ha-hetzner-cloud-costs",
+  "documentation": "https://github.com/MehrCurry/ha-hetzner-cloud-costs",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://gitlab.com/gzo-projects/ha-hetzner-cloud-costs/-/issues",
+  "issue_tracker": "https://github.com/MehrCurry/ha-hetzner-cloud-costs/issues",
   "requirements": ["opentelemetry-api==1.45.2", "opentelemetry-sdk==1.45.2"],
   "version": "0.1.0"
 }
